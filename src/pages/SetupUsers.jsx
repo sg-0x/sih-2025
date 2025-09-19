@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createPredefinedUsers } from '../utils/createPredefinedUsers';
+import { fixAllPredefinedUsers } from '../utils/fixUserRole';
 
 function SetupUsers() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,20 @@ function SetupUsers() {
     try {
       await createPredefinedUsers();
       setMessage('✅ Predefined users created successfully!');
+    } catch (error) {
+      setMessage(`❌ Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFixRoles = async () => {
+    setLoading(true);
+    setMessage('Fixing user roles...');
+    
+    try {
+      await fixAllPredefinedUsers();
+      setMessage('✅ User roles fixed successfully! Please refresh the page and login again.');
     } catch (error) {
       setMessage(`❌ Error: ${error.message}`);
     } finally {
@@ -50,23 +65,43 @@ function SetupUsers() {
                 </div>
               </div>
 
-              <button 
-                className="btn btn-primary btn-lg"
-                onClick={handleCreateUsers}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                    Creating Users...
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-person-plus me-2"></i>
-                    Create Predefined Users
-                  </>
-                )}
-              </button>
+              <div className="d-flex gap-3 flex-wrap">
+                <button 
+                  className="btn btn-primary btn-lg"
+                  onClick={handleCreateUsers}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Creating Users...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-person-plus me-2"></i>
+                      Create Predefined Users
+                    </>
+                  )}
+                </button>
+
+                <button 
+                  className="btn btn-warning btn-lg"
+                  onClick={handleFixRoles}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Fixing Roles...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-tools me-2"></i>
+                      Fix User Roles
+                    </>
+                  )}
+                </button>
+              </div>
 
               {message && (
                 <div className={`alert ${message.includes('✅') ? 'alert-success' : 'alert-danger'} mt-3`}>
@@ -79,9 +114,13 @@ function SetupUsers() {
                 <ol>
                   <li>Click "Create Predefined Users" button above</li>
                   <li>Wait for the creation to complete</li>
+                  <li><strong>If roles are wrong:</strong> Click "Fix User Roles" button</li>
                   <li>Go to login page and use any of the predefined accounts</li>
                   <li>Teachers will see teacher dashboard, admin will see admin dashboard</li>
                 </ol>
+                <div className="alert alert-warning mt-3">
+                  <strong>Note:</strong> If you see "Role: student" in the debug panel, click "Fix User Roles" to correct the roles in Firestore.
+                </div>
               </div>
             </div>
           </div>
