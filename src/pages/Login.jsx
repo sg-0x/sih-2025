@@ -8,12 +8,19 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      login(email.trim(), password);
-      navigate('/');
+      const user = await login(email.trim(), password);
+      // Role-based redirection after successful login
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else if (user.role === 'teacher') {
+        navigate('/teacher', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
     } catch (err) {
       setError(err.message || 'Login failed');
     }

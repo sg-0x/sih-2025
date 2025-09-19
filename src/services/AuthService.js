@@ -29,7 +29,7 @@ export function onAuthChange(cb) {
   return () => listeners.delete(cb);
 }
 
-export async function login(email, password, role) {
+export async function login(email, password) {
   if (!email || !password) throw new Error('Missing credentials');
   
   try {
@@ -40,14 +40,19 @@ export async function login(email, password, role) {
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     const userData = userDoc.data();
     
+    console.log('Login - User data from Firestore:', userData);
+    console.log('Login - Email:', email);
+    
     const userProfile = {
       uid: user.uid,
       email: user.email,
-      role: role || userData?.role || inferRoleFromEmail(email),
+      role: userData?.role || inferRoleFromEmail(email),
       name: userData?.name || user.displayName || email.split('@')[0],
       institution: userData?.institution || '',
       phone: userData?.phone || ''
     };
+    
+    console.log('Login - Final user profile:', userProfile);
     
     emitAuthChange(userProfile);
     return userProfile;
@@ -102,8 +107,14 @@ export async function logout() {
 }
 
 function inferRoleFromEmail(email) {
-  // For this app, all users are students by default
-  // Admin and teacher roles are managed separately by the system
+  // Check if email contains role indicators
+  if (email.includes('teacher') || email.includes('prof') || email.includes('faculty')) {
+    return 'teacher';
+  }
+  if (email.includes('admin') || email.includes('administrator')) {
+    return 'admin';
+  }
+  // For this app, all other users are students by default
   return 'student';
 }
 

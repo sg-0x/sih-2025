@@ -7,7 +7,6 @@ import { auth } from '../config/firebase';
 function Auth() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('login'); // 'login' | 'signup'
-  const [role, setRole] = useState('student');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,10 +24,21 @@ function Auth() {
     setSuccess('');
     try {
       if (mode === 'login') {
-        const user = await login(email.trim(), password, role);
-        if (user.role === 'admin') navigate('/admin', { replace: true });
-        else if (user.role === 'teacher') navigate('/teacher', { replace: true });
-        else navigate('/', { replace: true });
+        const user = await login(email.trim(), password);
+        console.log('Auth.jsx - User after login:', user);
+        console.log('Auth.jsx - User role:', user.role);
+        
+        // Role-based redirection after successful login
+        if (user.role === 'admin') {
+          console.log('Auth.jsx - Redirecting to admin dashboard');
+          navigate('/admin', { replace: true });
+        } else if (user.role === 'teacher') {
+          console.log('Auth.jsx - Redirecting to teacher dashboard');
+          navigate('/teacher', { replace: true });
+        } else {
+          console.log('Auth.jsx - Redirecting to home (student)');
+          navigate('/', { replace: true });
+        }
       } else {
         if (password !== confirm) throw new Error('Passwords do not match');
         const user = await signup(name.trim(), email.trim(), password, 'student', { institution: institution.trim(), phone: phone.trim() });

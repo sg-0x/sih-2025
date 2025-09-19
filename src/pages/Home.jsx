@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { getCurrentUser } from '../services/AuthService';
+import DebugUser from '../components/DebugUser';
 
 function Home() {
   console.log('Home component rendering'); // Debug log
@@ -9,6 +10,7 @@ function Home() {
   
   return (
     <div className="py-4">
+      <DebugUser />
       <div className="p-4 p-md-5 mb-4 rounded-4 border position-relative overflow-hidden main-hero-card">
         <div className="position-absolute top-0 end-0 opacity-25" style={{ transform: 'translate(20%, -20%)' }}>
           <i className="bi bi-radar hero-icon"></i>
