@@ -29,6 +29,7 @@ function AppRoutes() {
         </div>
       </div>
       <AppFooter />
+      <Chatbot />
     </div>
   );
   const AuthLayout = () => (
@@ -69,7 +70,6 @@ function App() {
   return (
     <BrowserRouter>
       <AppRoutes />
-      <Chatbot />
     </BrowserRouter>
   );
 }
