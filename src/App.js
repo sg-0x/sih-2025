@@ -30,6 +30,7 @@ function AppRoutes() {
         </div>
       </div>
       <AppFooter />
+      <Chatbot />
     </div>
   );
   const AuthLayout = () => (
