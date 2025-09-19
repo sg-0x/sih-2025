@@ -5,6 +5,7 @@ import AppNav from './components/AppNav';
 import AppFooter from './components/AppFooter';
 import MotionPage from './components/MotionPage';
 import Chatbot from './components/Chatbot';
+import NotificationToast from './components/NotificationToast';
 import Home from './pages/Home';
 import Learn from './pages/Learn';
 import Alerts from './pages/Alerts';
@@ -70,6 +71,7 @@ function App() {
     <BrowserRouter>
       <AppRoutes />
       <Chatbot />
+      <NotificationToast />
     </BrowserRouter>
   );
 }

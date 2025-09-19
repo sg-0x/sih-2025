@@ -1,16 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { getCurrentUser } from '../services/AuthService';
-import DebugUser from '../components/DebugUser';
+import AnnouncementsDisplay from '../components/AnnouncementsDisplay';
+import StudentNotifications from '../components/StudentNotifications';
+import StudentModulesDisplay from '../components/StudentModulesDisplay';
 
 function Home() {
-  console.log('Home component rendering'); // Debug log
-  const user = getCurrentUser();
-  console.log('Home - Current user:', user); // Debug log
-  
   return (
     <div className="py-4">
-      <DebugUser />
       <div className="p-4 p-md-5 mb-4 rounded-4 border position-relative overflow-hidden main-hero-card">
         <div className="position-absolute top-0 end-0 opacity-25" style={{ transform: 'translate(20%, -20%)' }}>
           <i className="bi bi-radar hero-icon"></i>
@@ -27,16 +23,35 @@ function Home() {
           </div>
         </div>
       </div>
+
+      {/* Teacher Actions Display */}
+      <div className="mb-4">
+        <StudentNotifications />
+      </div>
+
+      {/* Modules Assigned by Teachers */}
+      <div className="mb-4">
+        <StudentModulesDisplay />
+      </div>
+
+      {/* Announcements Display */}
+      <div className="mb-4">
+        <AnnouncementsDisplay userRole="student" />
+      </div>
+
+      {/* Rest of your existing content */}
       <div className="row g-3 mb-4">
         <div className="col-12">
           <div className="d-flex flex-wrap gap-3 justify-content-between align-items-center p-3 rounded-4 border bg-white shadow-sm">
             <div className="d-flex align-items-center gap-2"><i className="bi bi-people text-primary"></i><span className="small text-muted">Students onboarded</span><span className="fw-semibold">1,240</span></div>
             <div className="d-flex align-items-center gap-2"><i className="bi bi-film text-danger"></i><span className="small text-muted">Modules completed</span><span className="fw-semibold">8,420</span></div>
-            <div className="d-flex align-items-center gap-2"><i className="bi bi-flag text-success"></i><span className="small text-muted">Drills recorded</span><span className="fw-semibold">156</span></div>
+            <div className="d-flex align-items-center gap-2"><i className="bi bi-flag text-success"></i><span className="small text-muted">Drill recorded</span><span className="fw-semibold">156</span></div>
             <div className="d-flex align-items-center gap-2"><i className="bi bi-shield-check text-warning"></i><span className="small text-muted">Avg preparedness</span><span className="fw-semibold">81%</span></div>
           </div>
         </div>
       </div>
+
+      {/* Rest of your existing content */}
       <div className="row g-3">
         <div className="col-12 col-md-6 col-xl-3">
           <div className="card h-100 shadow-sm">
@@ -83,27 +98,8 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="row g-3 mt-1">
-        <div className="col-12">
-          <div className="card shadow-sm">
-            <div className="card-body d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-              <div>
-                <h5 className="card-title mb-1">Quick Start</h5>
-                <div className="text-muted small">Choose a path to begin your preparedness journey.</div>
-              </div>
-              <div className="d-flex flex-wrap gap-2">
-                <Link to="/learn" className="btn btn-outline-primary"><i className="bi bi-journal-text me-1"></i>Start a Module</Link>
-                <Link to="/drills" className="btn btn-outline-success"><i className="bi bi-joystick me-1"></i>Run a Drill</Link>
-                <Link to="/emergency" className="btn btn-outline-danger"><i className="bi bi-telephone me-1"></i>Emergency Tools</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
 
 export default Home;
-
-

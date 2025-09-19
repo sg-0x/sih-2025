@@ -1,6 +1,8 @@
 import React from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import ProgressRing from '../components/ProgressRing';
+import RealTimeCommunication from '../components/RealTimeCommunication';
+import AlertCreationForm from '../components/AlertCreationForm';
 import { useEffect, useState } from 'react';
 
 const COMPLETION = [
@@ -23,6 +25,40 @@ function Admin() {
     window.addEventListener('themechange', update);
     return () => window.removeEventListener('themechange', update);
   }, []);
+
+  // Communication handlers
+  const handleSendDrillAnnouncement = async (message) => {
+    console.log('Sending drill announcement:', message);
+    // TODO: Implement API call to send drill announcement
+    // This will be connected to the backend real-time features
+  };
+
+  const handleSendEmergencyAlert = async (message) => {
+    console.log('Sending emergency alert:', message);
+    // TODO: Implement API call to send emergency alert
+    // This will be connected to the backend real-time features
+  };
+
+  const handleSaveAlert = async (alertData) => {
+    console.log('Saving alert:', alertData);
+    // TODO: Implement API call to save alert
+    // This will be connected to the backend real-time features
+    
+    // Simulate real-time alert notification
+    const event = new CustomEvent('emergencyAlert', {
+      detail: {
+        type: 'emergency_alert',
+        title: alertData.title,
+        message: alertData.description,
+        severity: alertData.severity,
+        alertType: alertData.alertType,
+        region: alertData.region,
+        createdAt: alertData.createdAt
+      }
+    });
+    
+    window.dispatchEvent(event);
+  };
 
   return (
     <div className="row g-3">
@@ -62,33 +98,11 @@ function Admin() {
           </div>
         </div>
       </div>
-      <div className="col-12 col-xl-6">
-        <div className="card h-100 shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title d-flex align-items-center gap-2"><i className="bi bi-broadcast text-danger"></i>Alerts configuration</h5>
-            <div className="row g-2">
-              <div className="col-12 col-md-6">
-                <label className="form-label small">Region</label>
-                <select className="form-select form-select-sm">
-                  <option>Himachal Pradesh</option>
-                  <option>Assam</option>
-                  <option>Bihar</option>
-                  <option>Uttarakhand</option>
-                </select>
-              </div>
-              <div className="col-12 col-md-6">
-                <label className="form-label small">Severity threshold</label>
-                <select className="form-select form-select-sm">
-                  <option>All</option>
-                  <option>High</option>
-                  <option>Medium</option>
-                  <option>Low</option>
-                </select>
-              </div>
-            </div>
-            <button className="btn btn-outline-primary btn-sm mt-2" aria-label="Save alert configuration"><i className="bi bi-save me-1"></i>Save preferences</button>
-          </div>
-        </div>
+      <div className="col-12">
+        <AlertCreationForm 
+          onSaveAlert={handleSaveAlert}
+          onCancel={() => console.log('Alert creation cancelled')}
+        />
       </div>
       <div className="col-12 col-xl-6">
         <div className="card h-100 shadow-sm">
@@ -107,6 +121,13 @@ function Admin() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="col-12">
+        <RealTimeCommunication 
+          userRole="admin"
+          onSendDrillAnnouncement={handleSendDrillAnnouncement}
+          onSendEmergencyAlert={handleSendEmergencyAlert}
+        />
       </div>
     </div>
   );
