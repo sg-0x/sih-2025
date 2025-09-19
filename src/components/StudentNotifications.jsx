@@ -6,6 +6,8 @@ function StudentNotifications() {
   const [assignedModules, setAssignedModules] = useState([]);
   const [confirmedDrills, setConfirmedDrills] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAllModules, setShowAllModules] = useState(false);
+  const [showAllDrills, setShowAllDrills] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -104,7 +106,7 @@ function StudentNotifications() {
               </div>
             ) : (
               <div className="list-group list-group-flush">
-                {assignedModules.map((module, index) => (
+                {(showAllModules ? assignedModules : assignedModules.slice(0, 2)).map((module, index) => (
                   <div key={index} className="list-group-item border-0 px-0">
                     <div className="d-flex align-items-start gap-3">
                       <div className="flex-shrink-0">
@@ -129,6 +131,26 @@ function StudentNotifications() {
                     </div>
                   </div>
                 ))}
+                {assignedModules.length > 2 && (
+                  <div className="text-center mt-3">
+                    <button 
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => setShowAllModules(!showAllModules)}
+                    >
+                      {showAllModules ? (
+                        <>
+                          <i className="bi bi-chevron-up me-1"></i>
+                          Show Less
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-chevron-down me-1"></i>
+                          Show More ({assignedModules.length - 2} more)
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -152,7 +174,7 @@ function StudentNotifications() {
               </div>
             ) : (
               <div className="list-group list-group-flush">
-                {confirmedDrills.map((drill, index) => (
+                {(showAllDrills ? confirmedDrills : confirmedDrills.slice(0, 2)).map((drill, index) => (
                   <div key={index} className="list-group-item border-0 px-0">
                     <div className="d-flex align-items-start gap-3">
                       <div className="flex-shrink-0">
@@ -180,6 +202,26 @@ function StudentNotifications() {
                     </div>
                   </div>
                 ))}
+                {confirmedDrills.length > 2 && (
+                  <div className="text-center mt-3">
+                    <button 
+                      className="btn btn-outline-success btn-sm"
+                      onClick={() => setShowAllDrills(!showAllDrills)}
+                    >
+                      {showAllDrills ? (
+                        <>
+                          <i className="bi bi-chevron-up me-1"></i>
+                          Show Less
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-chevron-down me-1"></i>
+                          Show More ({confirmedDrills.length - 2} more)
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

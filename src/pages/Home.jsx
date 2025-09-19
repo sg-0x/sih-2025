@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AnnouncementsDisplay from '../components/AnnouncementsDisplay';
 import StudentNotifications from '../components/StudentNotifications';
-import StudentModulesDisplay from '../components/StudentModulesDisplay';
 
 function Home() {
   return (
@@ -24,22 +23,7 @@ function Home() {
         </div>
       </div>
 
-      {/* Teacher Actions Display */}
-      <div className="mb-4">
-        <StudentNotifications />
-      </div>
-
-      {/* Modules Assigned by Teachers */}
-      <div className="mb-4">
-        <StudentModulesDisplay />
-      </div>
-
-      {/* Announcements Display */}
-      <div className="mb-4">
-        <AnnouncementsDisplay userRole="student" />
-      </div>
-
-      {/* Rest of your existing content */}
+      {/* Statistics Section */}
       <div className="row g-3 mb-4">
         <div className="col-12">
           <div className="d-flex flex-wrap gap-3 justify-content-between align-items-center p-3 rounded-4 border bg-white shadow-sm">
@@ -51,8 +35,8 @@ function Home() {
         </div>
       </div>
 
-      {/* Rest of your existing content */}
-      <div className="row g-3">
+      {/* Feature Cards */}
+      <div className="row g-3 mb-4">
         <div className="col-12 col-md-6 col-xl-3">
           <div className="card h-100 shadow-sm">
             <div className="card-body d-flex align-items-start gap-3">
@@ -97,6 +81,16 @@ function Home() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Teacher Actions Display */}
+      <div className="mb-4">
+        <StudentNotifications />
+      </div>
+
+      {/* Announcements Display */}
+      <div className="mb-4">
+        <AnnouncementsDisplay userRole="student" />
       </div>
     </div>
   );

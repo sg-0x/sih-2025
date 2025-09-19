@@ -6,6 +6,7 @@ function StudentModulesDisplay() {
   const [assignedModules, setAssignedModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedModule, setSelectedModule] = useState(null);
+  const [showAllModules, setShowAllModules] = useState(false);
 
   useEffect(() => {
     loadModules();
@@ -145,7 +146,8 @@ function StudentModulesDisplay() {
           </div>
         </div>
       ) : (
-        assignedModules.map((module, index) => (
+        <>
+          {(showAllModules ? assignedModules : assignedModules.slice(0, 2)).map((module, index) => (
           <div key={module._id || index} className="col-12 col-lg-6">
             <div className={`card h-100 ${isOverdue(module.dueDate) ? 'border-danger' : isDueSoon(module.dueDate) ? 'border-warning' : 'border-primary'}`}>
               <div className="card-header bg-light">
@@ -221,7 +223,28 @@ function StudentModulesDisplay() {
               </div>
             </div>
           </div>
-        ))
+          ))}
+          {assignedModules.length > 2 && (
+            <div className="col-12 text-center mt-3">
+              <button 
+                className="btn btn-outline-primary btn-sm"
+                onClick={() => setShowAllModules(!showAllModules)}
+              >
+                {showAllModules ? (
+                  <>
+                    <i className="bi bi-chevron-up me-1"></i>
+                    Show Less
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-chevron-down me-1"></i>
+                    Show More ({assignedModules.length - 2} more)
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Module Detail Modal */}

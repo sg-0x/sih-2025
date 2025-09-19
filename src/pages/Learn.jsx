@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import StudentModulesDisplay from '../components/StudentModulesDisplay';
 
 const CATEGORIES = [
   { id: 'earthquake', name: 'Earthquake' },
@@ -119,6 +120,7 @@ function Learn() {
   const [progress, setProgress] = useState({});
   const [category, setCategory] = useState('earthquake');
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [activeTab, setActiveTab] = useState('learning');
 
   const recommended = useMemo(() => {
     // Get priority disasters for the selected region
@@ -146,8 +148,38 @@ function Learn() {
   };
 
   return (
-    <div className="row g-3">
-      <div className="col-12 col-md-4">
+    <div>
+      {/* Tab Navigation */}
+      <div className="mb-4">
+        <ul className="nav nav-tabs" id="learnTabs" role="tablist">
+          <li className="nav-item" role="presentation">
+            <button 
+              className={`nav-link ${activeTab === 'learning' ? 'active' : ''}`}
+              onClick={() => setActiveTab('learning')}
+              type="button"
+            >
+              <i className="bi bi-mortarboard me-2"></i>
+              Learning Modules
+            </button>
+          </li>
+          <li className="nav-item" role="presentation">
+            <button 
+              className={`nav-link ${activeTab === 'assigned' ? 'active' : ''}`}
+              onClick={() => setActiveTab('assigned')}
+              type="button"
+            >
+              <i className="bi bi-person-workspace me-2"></i>
+              Modules Assigned by Teachers
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      {/* Tab Content */}
+      <div className="tab-content">
+        {activeTab === 'learning' && (
+          <div className="row g-3">
+            <div className="col-12 col-md-4">
         <div className="card shadow-sm">
           <div className="card-body">
             <h5 className="card-title d-flex align-items-center gap-2"><i className="bi bi-geo-alt text-primary"></i>Your Region</h5>
@@ -255,6 +287,15 @@ function Learn() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+      </div>
+    </div>
+        )}
+
+        {activeTab === 'assigned' && (
+          <div>
+            <StudentModulesDisplay />
           </div>
         )}
       </div>

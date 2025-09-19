@@ -5,6 +5,8 @@ function AnnouncementsDisplay({ userRole }) {
   const [announcements, setAnnouncements] = useState([]);
   const [emergencyAlerts, setEmergencyAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAllAnnouncements, setShowAllAnnouncements] = useState(false);
+  const [showAllAlerts, setShowAllAlerts] = useState(false);
 
   useEffect(() => {
     loadAnnouncements();
@@ -108,7 +110,7 @@ function AnnouncementsDisplay({ userRole }) {
           </div>
         ) : (
           <div className="row g-3">
-            {announcements.map((announcement, index) => (
+            {(showAllAnnouncements ? announcements : announcements.slice(0, 2)).map((announcement, index) => (
               <div key={announcement._id || index} className="col-12 col-md-6">
                 <div className="card border-warning">
                   <div className="card-body">
@@ -143,6 +145,26 @@ function AnnouncementsDisplay({ userRole }) {
                 </div>
               </div>
             ))}
+            {announcements.length > 2 && (
+              <div className="col-12 text-center mt-3">
+                <button 
+                  className="btn btn-outline-warning btn-sm"
+                  onClick={() => setShowAllAnnouncements(!showAllAnnouncements)}
+                >
+                  {showAllAnnouncements ? (
+                    <>
+                      <i className="bi bi-chevron-up me-1"></i>
+                      Show Less
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-chevron-down me-1"></i>
+                      Show More ({announcements.length - 2} more)
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -162,7 +184,7 @@ function AnnouncementsDisplay({ userRole }) {
           </div>
         ) : (
           <div className="row g-3">
-            {emergencyAlerts.map((alert, index) => (
+            {(showAllAlerts ? emergencyAlerts : emergencyAlerts.slice(0, 2)).map((alert, index) => (
               <div key={alert._id || index} className="col-12 col-md-6">
                 <div className="card border-danger">
                   <div className="card-body">
@@ -193,6 +215,26 @@ function AnnouncementsDisplay({ userRole }) {
                 </div>
               </div>
             ))}
+            {emergencyAlerts.length > 2 && (
+              <div className="col-12 text-center mt-3">
+                <button 
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={() => setShowAllAlerts(!showAllAlerts)}
+                >
+                  {showAllAlerts ? (
+                    <>
+                      <i className="bi bi-chevron-up me-1"></i>
+                      Show Less
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-chevron-down me-1"></i>
+                      Show More ({emergencyAlerts.length - 2} more)
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
