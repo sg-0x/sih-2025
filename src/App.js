@@ -71,10 +71,24 @@ function App() {
   return (
     <BrowserRouter>
       <AppRoutes />
-      <Chatbot />
+      <ConditionalChatbot />
       <NotificationToast />
     </BrowserRouter>
   );
+}
+
+function ConditionalChatbot() {
+  const location = useLocation();
+  
+  // Don't show chatbot on auth pages
+  const authPages = ['/login', '/signup', '/setup'];
+  const isAuthPage = authPages.includes(location.pathname);
+  
+  if (isAuthPage) {
+    return null;
+  }
+  
+  return <Chatbot />;
 }
 
 export default App;

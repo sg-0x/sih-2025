@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import PointsDisplay from './PointsDisplay';
 import { useEffect, useState } from 'react';
 import { getCurrentUser, logout, onAuthChange } from '../services/AuthService';
 
@@ -57,6 +58,9 @@ function AppNav() {
             )}
           </ul>
           <div className="d-flex align-items-center gap-2">
+            {user && (user.role === 'student' || !user.role) && (
+              <PointsDisplay />
+            )}
             {user ? (
               <>
                 <span className="small text-muted">{user.name} · {user.role}</span>
