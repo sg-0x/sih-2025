@@ -9,9 +9,11 @@ import { auth, db } from '../config/firebase';
 
 let listeners = new Set();
 let currentUserProfile = null;
+let authInitialized = false;
 
 function emitAuthChange(user) {
   currentUserProfile = user;
+  authInitialized = true;
   const evt = new CustomEvent('authchange', { detail: { user } });
   window.dispatchEvent(evt);
   listeners.forEach((cb) => {
@@ -22,6 +24,10 @@ function emitAuthChange(user) {
 export function getCurrentUser() {
   console.log('getCurrentUser called, returning:', currentUserProfile); // Debug log
   return currentUserProfile;
+}
+
+export function isAuthInitialized() {
+  return authInitialized;
 }
 
 export function onAuthChange(cb) {

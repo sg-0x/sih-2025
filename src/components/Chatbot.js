@@ -8,6 +8,7 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const [datasetCache, setDatasetCache] = useState(null);
 
   // Hardcoded API key - replace with your actual API key
   const API_KEY = 'AIzaSyBBxZLjru3yDvqQ3MGtA1gPcziVGXq4dAI';
@@ -28,9 +29,15 @@ const Chatbot = () => {
   }, [isOpen]);
 
   const loadDisasterDataset = async () => {
+    // Return cached dataset if available
+    if (datasetCache) {
+      return datasetCache;
+    }
+    
     try {
       const response = await fetch('/disaster_dataset.json');
       const dataset = await response.json();
+      setDatasetCache(dataset); // Cache the dataset
       return dataset;
     } catch (error) {
       console.error('Error loading disaster dataset:', error);
@@ -59,24 +66,33 @@ const Chatbot = () => {
         return;
       }
 
-      // Create system prompt with dataset
-      const systemPrompt = `You are a friendly disaster preparedness assistant for students. Your job is to help students understand disaster safety in a clear, easy-to-follow way.
+      // Create optimized system prompt with dataset (reduced payload)
+      const datasetSummary = dataset ? Object.keys(dataset).slice(0, 10).map(key => 
+        `${key}: ${JSON.stringify(dataset[key]).substring(0, 200)}...`
+      ).join('\n') : 'No dataset available';
 
-IMPORTANT INSTRUCTIONS:
-- Use the disaster dataset provided below to answer questions
-- DO NOT copy raw text directly from the dataset
-- Rephrase and reformat information into natural, conversational responses
-- Use short sentences, bullet points, or step numbers to make it easy to follow
-- Write in a friendly, encouraging tone suitable for students
-- If the dataset doesn't contain the answer, politely say "I don't have that information in my disaster preparedness database, but I'd be happy to help with other safety questions!"
+      const systemPrompt = `You are a disaster preparedness assistant for students. Help with safety questions using this data:
 
-Disaster Dataset:
-${JSON.stringify(dataset, null, 2)}
+${datasetSummary}
 
-User Question: ${userMessage}`;
+Guidelines:
+- Answer in friendly, clear language
+- Use bullet points for steps
+- Keep responses concise (under 200 words)
+- If unsure, say "I don't have that specific information, but here's general advice..."
 
-      // Generate response using Gemini
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+Question: ${userMessage}`;
+
+      // Generate response using Gemini (switched to stable model with higher rate limits)
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        }
+      });
       const result = await model.generateContent(systemPrompt);
       const response = await result.response;
       const botMessage = response.text();
@@ -84,9 +100,21 @@ User Question: ${userMessage}`;
       setMessages(prev => [...prev, { type: 'bot', content: botMessage }]);
     } catch (error) {
       console.error('Error generating response:', error);
+      
+      let errorMessage = 'Sorry, I encountered an error while processing your request. Please try again.';
+      
+      // Handle specific error types
+      if (error.message?.includes('quota') || error.message?.includes('rate limit')) {
+        errorMessage = 'I\'m getting too many requests right now. Please wait a moment and try again.';
+      } else if (error.message?.includes('API key')) {
+        errorMessage = 'There\'s an issue with my configuration. Please contact support.';
+      } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+        errorMessage = 'I\'m having trouble connecting. Please check your internet and try again.';
+      }
+      
       setMessages(prev => [...prev, { 
         type: 'bot', 
-        content: 'Sorry, I encountered an error while processing your request. Please try again.' 
+        content: errorMessage 
       }]);
     } finally {
       setIsLoading(false);
@@ -113,8 +141,8 @@ User Question: ${userMessage}`;
           position: 'fixed',
           bottom: '24px',
           right: '24px',
-          width: '75px',
-          height: '75px',
+          width: '60px',
+          height: '60px',
           borderRadius: '50%',
           backgroundColor: '#2563eb',
           color: 'white',
@@ -132,8 +160,8 @@ User Question: ${userMessage}`;
         aria-label="Open chatbot"
       >
         <svg
-          width="30"
-          height="30"
+          width="36"
+          height="36"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -155,7 +183,7 @@ User Question: ${userMessage}`;
           bottom: '100px',
           right: '24px',
           width: '350px',
-          maxHeight: '60vh',
+          maxHeight: '75vh',
           backgroundColor: 'white',
           borderRadius: '12px',
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
@@ -197,7 +225,7 @@ User Question: ${userMessage}`;
             flex: 1,
             overflowY: 'auto',
             padding: '16px',
-            maxHeight: '300px',
+            maxHeight: '400px',
             display: 'flex',
             flexDirection: 'column',
             gap: '12px'
