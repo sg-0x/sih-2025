@@ -16,6 +16,7 @@ import Admin from './pages/Admin';
 import Teacher from './pages/Teacher';
 import Auth from './pages/Auth';
 import SetupUsers from './pages/SetupUsers';
+import DisasterSimulation from './pages/DisasterSimulation';
 import RequireAuth from './components/RequireAuth';
 import RoleGuard, { AllowRoles } from './components/RoleGuard';
 
@@ -61,6 +62,7 @@ function AppRoutes() {
           <Route path="/emergency" element={<MotionPage><AllowRoles roles={["student","teacher"]}><Emergency /></AllowRoles></MotionPage>} />
           <Route path="/admin" element={<MotionPage><RoleGuard role="admin"><Admin /></RoleGuard></MotionPage>} />
           <Route path="/teacher" element={<MotionPage><RoleGuard role="teacher"><Teacher /></RoleGuard></MotionPage>} />
+          <Route path="/disaster-simulation" element={<MotionPage><AllowRoles roles={["student","teacher"]}><DisasterSimulation /></AllowRoles></MotionPage>} />
         </Route>
       </Routes>
     </AnimatePresence>
@@ -71,24 +73,10 @@ function App() {
   return (
     <BrowserRouter>
       <AppRoutes />
-      <ConditionalChatbot />
+      <Chatbot />
       <NotificationToast />
     </BrowserRouter>
   );
-}
-
-function ConditionalChatbot() {
-  const location = useLocation();
-  
-  // Don't show chatbot on auth pages
-  const authPages = ['/login', '/signup', '/setup'];
-  const isAuthPage = authPages.includes(location.pathname);
-  
-  if (isAuthPage) {
-    return null;
-  }
-  
-  return <Chatbot />;
 }
 
 export default App;

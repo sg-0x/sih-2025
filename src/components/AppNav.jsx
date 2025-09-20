@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
-import PointsDisplay from './PointsDisplay';
 import { useEffect, useState } from 'react';
 import { getCurrentUser, logout, onAuthChange } from '../services/AuthService';
 
@@ -39,6 +38,7 @@ function AppNav() {
                 <li className="nav-item"><NavLink className="nav-link" to="/learn"><i className="bi bi-mortarboard me-1"></i>Learn</NavLink></li>
                 <li className="nav-item"><NavLink className="nav-link" to="/alerts"><i className="bi bi-broadcast me-1"></i>Alerts</NavLink></li>
                 <li className="nav-item"><NavLink className="nav-link" to="/drills"><i className="bi bi-joystick me-1"></i>Drills</NavLink></li>
+                <li className="nav-item"><NavLink className="nav-link" to="/disaster-simulation"><i className="bi bi-shield-exclamation me-1"></i>Disaster Sim</NavLink></li>
                 <li className="nav-item"><NavLink className="nav-link" to="/leaderboard"><i className="bi bi-trophy me-1"></i>Leaderboard</NavLink></li>
                 <li className="nav-item"><NavLink className="nav-link" to="/emergency"><i className="bi bi-telephone me-1"></i>Emergency</NavLink></li>
               </>
@@ -48,6 +48,7 @@ function AppNav() {
                 <li className="nav-item"><NavLink className="nav-link" to="/teacher"><i className="bi bi-speedometer2 me-1"></i>Dashboard</NavLink></li>
                 <li className="nav-item"><NavLink className="nav-link" to="/alerts"><i className="bi bi-broadcast me-1"></i>Alerts</NavLink></li>
                 <li className="nav-item"><NavLink className="nav-link" to="/drills"><i className="bi bi-flag me-1"></i>Drills</NavLink></li>
+                <li className="nav-item"><NavLink className="nav-link" to="/disaster-simulation"><i className="bi bi-shield-exclamation me-1"></i>Disaster Sim</NavLink></li>
               </>
             )}
             {user?.role === 'admin' && (
@@ -58,9 +59,6 @@ function AppNav() {
             )}
           </ul>
           <div className="d-flex align-items-center gap-2">
-            {user && (user.role === 'student' || !user.role) && (
-              <PointsDisplay />
-            )}
             {user ? (
               <>
                 <span className="small text-muted">{user.name} · {user.role}</span>

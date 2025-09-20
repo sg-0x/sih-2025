@@ -1,54 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 function AppFooter() {
-  const [email, setEmail] = useState('');
-  const [isSubscribing, setIsSubscribing] = useState(false);
-  const [message, setMessage] = useState('');
-
-  const handleSubscribe = async (e) => {
-    e.preventDefault();
-    
-    if (!email || !email.includes('@')) {
-      setMessage('Please enter a valid email address');
-      return;
-    }
-
-    setIsSubscribing(true);
-    setMessage('');
-
-    try {
-      console.log('Attempting to subscribe email:', email);
-      console.log('Making request to: http://localhost:5000/api/mailing-list/subscribe');
-      
-      const response = await fetch('http://localhost:5000/api/mailing-list/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-      
-      const data = await response.json();
-      console.log('Response data:', data);
-      
-      if (data.success) {
-        setMessage(data.message);
-        setEmail(''); // Clear the input
-      } else {
-        setMessage(data.message || 'Failed to subscribe');
-      }
-    } catch (error) {
-      console.error('Subscription error:', error);
-      console.error('Error details:', error.message);
-      setMessage(`Failed to subscribe: ${error.message}`);
-    } finally {
-      setIsSubscribing(false);
-    }
-  };
-
   return (
     <footer className="border-top bg-white mt-5 pt-4">
       <div className="container">
@@ -102,36 +54,10 @@ function AppFooter() {
                 </ul>
               </div>
             </div>
-            <form className="mt-3 d-flex gap-2" onSubmit={handleSubscribe}>
-              <input 
-                className="form-control form-control-sm" 
-                placeholder="Subscribe for updates" 
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isSubscribing}
-                required
-              />
-              <button 
-                className="btn btn-primary btn-sm" 
-                type="submit"
-                disabled={isSubscribing || !email}
-              >
-                {isSubscribing ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                    Subscribing...
-                  </>
-                ) : (
-                  'Subscribe'
-                )}
-              </button>
+            <form className="mt-3 d-flex gap-2" onSubmit={(e)=>e.preventDefault()}>
+              <input className="form-control form-control-sm" placeholder="Subscribe for updates" />
+              <button className="btn btn-primary btn-sm" type="submit">Subscribe</button>
             </form>
-            {message && (
-              <div className={`mt-2 small ${message.includes('Successfully') ? 'text-success' : 'text-danger'}`}>
-                {message}
-              </div>
-            )}
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 border-top mt-4 py-3">
