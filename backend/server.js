@@ -1822,6 +1822,6 @@ console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
 const PORT = process.env.PORT || 5000;
 console.log(`🌐 Port: ${PORT}`);
 console.log(`🗄️  MongoDB URI: ${process.env.MONGODB_URI ? 'Set' : 'Not set'}`);
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`�� Server running on http://localhost:${PORT}`);
 });
