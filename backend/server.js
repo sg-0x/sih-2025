@@ -92,12 +92,12 @@ const upload = multer({
 });
 
 // MongoDB connection
-const MONGODB_URI = 'mongodb+srv://sahildewani75_db_user:Sahil%40123@cluster0.uowncgx.mongodb.net/disaster-prep?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://sahildewani75_db_user:Sahil%40123@cluster0.uowncgx.mongodb.net/disaster-prep?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 10000,
   socketTimeoutMS: 45000,
   family: 4 // Use IPv4, skip trying IPv6
 })
@@ -106,6 +106,15 @@ mongoose.connect(MONGODB_URI, {
     console.error('❌ MongoDB Connection Error:', err);
     console.log('⚠️  Continuing without MongoDB - using fallback storage');
   });
+
+// Handle MongoDB connection events
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
@@ -1807,7 +1816,12 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+console.log('🚀 Starting Disaster Preparedness App...');
+console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+
 const PORT = process.env.PORT || 5000;
+console.log(`🌐 Port: ${PORT}`);
+console.log(`🗄️  MongoDB URI: ${process.env.MONGODB_URI ? 'Set' : 'Not set'}`);
 server.listen(PORT, () => {
   console.log(`�� Server running on http://localhost:${PORT}`);
 });

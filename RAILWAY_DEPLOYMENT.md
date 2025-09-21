@@ -42,10 +42,10 @@ In your Railway project dashboard, go to Variables and add:
 NODE_ENV=production
 PORT=5000
 REACT_APP_API_URL=https://your-app-name.railway.app
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/disaster-prep?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://sahildewani75_db_user:Sahil%40123@cluster0.uowncgx.mongodb.net/disaster-prep?retryWrites=true&w=majority&appName=Cluster0
 ```
 
-**Important**: Replace the MongoDB URI with your actual MongoDB Atlas connection string.
+**Important**: The MongoDB URI is already configured in your code, but you can override it with your own if needed.
 
 ## Step 4: Configure Custom Domain (Optional)
 
