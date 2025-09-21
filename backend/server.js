@@ -15,7 +15,9 @@ const server = createServer(app);
 // Socket.io setup
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:5001"],
+    origin: process.env.NODE_ENV === 'production' 
+      ? [process.env.RAILWAY_STATIC_URL, process.env.RAILWAY_PUBLIC_DOMAIN] 
+      : ["http://localhost:3000", "http://localhost:5000"],
     methods: ["GET", "POST"]
   }
 });
@@ -23,6 +25,11 @@ const io = new Server(server, {
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the React app build directory
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../build')));
+}
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -1793,7 +1800,14 @@ app.get('/api/leaderboard', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5001;
+// Catch-all handler: send back React's index.html file for client-side routing
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  });
+}
+
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`�� Server running on http://localhost:${PORT}`);
 });

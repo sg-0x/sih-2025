@@ -6,7 +6,7 @@ async function testPointsAPI() {
     console.log('🔄 Testing points API...');
     
     // Test awarding points
-    const response = await fetch('http://localhost:5001/api/points/award', {
+    const response = await fetch('http://localhost:5000/api/points/award', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

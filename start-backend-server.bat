@@ -14,7 +14,7 @@ echo PORT=5001 >> .env
 
 echo.
 echo 3. Starting server on port 5001...
-echo The server will start and you should see "Server running on http://localhost:5001"
+echo The server will start and you should see "Server running on http://localhost:5000"
 echo.
 npm start
 

@@ -19,15 +19,15 @@ if %errorlevel% neq 0 (
 
 echo.
 echo 2. Testing subscription API directly...
-curl -X POST http://localhost:5001/api/mailing-list/subscribe -H "Content-Type: application/json" -d "{\"email\":\"debug@test.com\"}"
+curl -X POST http://localhost:5000/api/mailing-list/subscribe -H "Content-Type: application/json" -d "{\"email\":\"debug@test.com\"}"
 
 echo.
 echo 3. Testing with a different email...
-curl -X POST http://localhost:5001/api/mailing-list/subscribe -H "Content-Type: application/json" -d "{\"email\":\"test2@example.com\"}"
+curl -X POST http://localhost:5000/api/mailing-list/subscribe -H "Content-Type: application/json" -d "{\"email\":\"test2@example.com\"}"
 
 echo.
 echo 4. Checking subscribers...
-curl -X GET http://localhost:5001/api/mailing-list/subscribers
+curl -X GET http://localhost:5000/api/mailing-list/subscribers
 
 echo.
 echo 5. Checking server logs...
