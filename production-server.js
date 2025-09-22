@@ -15,6 +15,12 @@ const app = express();
 // Middleware
 app.use(express.json());
 
+// Log all incoming requests
+app.use((req, res, next) => {
+  console.log(`📥 Incoming request: ${req.method} ${req.url} from ${req.ip}`);
+  next();
+});
+
 // Check if build directory exists
 const buildPath = path.join(__dirname, 'build');
 const buildExists = fs.existsSync(buildPath);
@@ -41,13 +47,21 @@ if (buildExists) {
 // Health check endpoint
 app.get('/api/test', (req, res) => {
   console.log('✅ /api/test endpoint hit');
+  console.log('📊 Request details:', {
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    ip: req.ip,
+    ips: req.ips
+  });
   res.json({ 
     message: 'Production server is responding!',
     timestamp: new Date().toISOString(),
     status: 'OK',
     port: PORT,
     buildExists: buildExists,
-    env: process.env.NODE_ENV
+    env: process.env.NODE_ENV,
+    serverTime: new Date().toISOString()
   });
 });
 
@@ -138,13 +152,14 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-// Start server with IPv6 binding (Railway requirement)
-const server = app.listen(PORT, '::', () => {
-  console.log(`✅ Production server running on http://[::]:${PORT}`);
-  console.log(`✅ Health check: http://[::]:${PORT}/api/test`);
-  console.log(`✅ Root: http://[::]:${PORT}/`);
+// Start server with all interfaces binding (Railway requirement)
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Production server running on http://0.0.0.0:${PORT}`);
+  console.log(`✅ Health check: http://0.0.0.0:${PORT}/api/test`);
+  console.log(`✅ Root: http://0.0.0.0:${PORT}/`);
   console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`✅ Build exists: ${buildExists}`);
+  console.log(`✅ Server is ready to accept connections!`);
 });
 
 // Handle server errors
