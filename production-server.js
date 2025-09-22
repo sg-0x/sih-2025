@@ -1,10 +1,19 @@
 // Production server - serves React app with all fixes
 console.log('🚀 Starting production server...');
 
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const PORT = process.env.PORT || 5000;
+let express, path, fs, PORT;
+
+try {
+  express = require('express');
+  path = require('path');
+  fs = require('fs');
+  PORT = process.env.PORT || 5000;
+  
+  console.log('✅ Express loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading dependencies:', error);
+  process.exit(1);
+}
 
 console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
 console.log(`📁 Working Directory: ${process.cwd()}`);
