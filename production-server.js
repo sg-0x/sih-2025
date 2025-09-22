@@ -1,5 +1,5 @@
-// Railway-fixed server - allows healthcheck.railway.app
-console.log('🚀 Starting Railway-fixed server...');
+// Production server - serves React app with all fixes
+console.log('🚀 Starting production server...');
 
 const express = require('express');
 const path = require('path');
@@ -12,24 +12,7 @@ console.log(`🌐 Port: ${PORT}`);
 
 const app = express();
 
-// Middleware to allow Railway health checks
-app.use((req, res, next) => {
-  // Allow Railway health check domain
-  if (req.get('host') === 'healthcheck.railway.app' || 
-      req.get('user-agent')?.includes('Railway') ||
-      req.get('x-forwarded-for')?.includes('railway')) {
-    console.log('✅ Railway health check request allowed');
-  }
-  
-  // Set CORS headers for all requests
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  next();
-});
-
-// Basic middleware
+// Middleware
 app.use(express.json());
 
 // Check if build directory exists
@@ -38,32 +21,39 @@ const buildExists = fs.existsSync(buildPath);
 
 console.log(`📁 Build directory exists: ${buildExists}`);
 
-// Serve static files from the React app build directory (if it exists)
 if (buildExists) {
-  app.use(express.static(buildPath));
-  console.log('✅ Serving static files from build directory');
+  // Check if index.html exists
+  const indexPath = path.join(buildPath, 'index.html');
+  const indexExists = fs.existsSync(indexPath);
+  console.log(`📄 index.html exists: ${indexExists}`);
+  
+  if (indexExists) {
+    // Serve static files from the React app build directory
+    app.use(express.static(buildPath));
+    console.log('✅ Serving static files from build directory');
+  } else {
+    console.log('❌ index.html not found in build directory');
+  }
 } else {
-  console.log('⚠️  Build directory not found, serving JSON responses only');
+  console.log('❌ Build directory not found');
 }
 
-// Health check endpoint - MUST be simple and fast
+// Health check endpoint
 app.get('/api/test', (req, res) => {
-  console.log('✅ /api/test endpoint hit from:', req.get('host') || req.ip);
+  console.log('✅ /api/test endpoint hit');
   res.json({ 
-    message: 'Railway-fixed server is responding!',
+    message: 'Production server is responding!',
     timestamp: new Date().toISOString(),
     status: 'OK',
     port: PORT,
     buildExists: buildExists,
-    env: process.env.NODE_ENV,
-    host: req.get('host'),
-    ip: req.ip
+    env: process.env.NODE_ENV
   });
 });
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  console.log('✅ /api/health endpoint hit from:', req.get('host') || req.ip);
+  console.log('✅ /api/health endpoint hit');
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
@@ -74,24 +64,35 @@ app.get('/api/health', (req, res) => {
 
 // Root endpoint
 app.get('/', (req, res) => {
-  console.log('✅ Root endpoint hit from:', req.get('host') || req.ip);
+  console.log('✅ Root endpoint hit');
   if (buildExists) {
-    try {
-      res.sendFile(path.join(buildPath, 'index.html'));
-      console.log('📄 Served React app from build directory');
-    } catch (error) {
-      console.error('❌ Error serving React app:', error);
+    const indexPath = path.join(buildPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      try {
+        res.sendFile(indexPath);
+        console.log('📄 Served React app from build directory');
+      } catch (error) {
+        console.error('❌ Error serving React app:', error);
+        res.json({ 
+          message: 'Production server is running! (Build exists but error serving)',
+          status: 'OK',
+          timestamp: new Date().toISOString(),
+          port: PORT,
+          error: error.message
+        });
+      }
+    } else {
+      console.log('❌ index.html not found');
       res.json({ 
-        message: 'Railway-fixed server is running! (Build exists but error serving)',
+        message: 'Production server is running! (index.html not found)',
         status: 'OK',
         timestamp: new Date().toISOString(),
-        port: PORT,
-        error: error.message
+        port: PORT
       });
     }
   } else {
     res.json({ 
-      message: 'Railway-fixed server is running! (No build directory)',
+      message: 'Production server is running! (No build directory)',
       status: 'OK',
       timestamp: new Date().toISOString(),
       port: PORT
@@ -99,16 +100,25 @@ app.get('/', (req, res) => {
   }
 });
 
-// Catch-all handler: send back React's index.html file for client-side routing (if build exists)
+// Catch-all handler: send back React's index.html file for client-side routing
 if (buildExists) {
   app.get('*', (req, res) => {
-    console.log(`📄 Serving React app for route: ${req.url} from: ${req.get('host') || req.ip}`);
-    try {
-      res.sendFile(path.join(buildPath, 'index.html'));
-    } catch (error) {
-      console.error('❌ Error serving React app for route:', req.url, error);
+    console.log(`📄 Serving React app for route: ${req.url}`);
+    const indexPath = path.join(buildPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      try {
+        res.sendFile(indexPath);
+      } catch (error) {
+        console.error('❌ Error serving React app for route:', req.url, error);
+        res.json({ 
+          message: 'Route not found',
+          url: req.url,
+          timestamp: new Date().toISOString()
+        });
+      }
+    } else {
       res.json({ 
-        message: 'Route not found',
+        message: 'React app not available',
         url: req.url,
         timestamp: new Date().toISOString()
       });
@@ -130,12 +140,11 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Start server with IPv6 binding (Railway requirement)
 const server = app.listen(PORT, '::', () => {
-  console.log(`✅ Railway-fixed server running on http://[::]:${PORT}`);
+  console.log(`✅ Production server running on http://[::]:${PORT}`);
   console.log(`✅ Health check: http://[::]:${PORT}/api/test`);
   console.log(`✅ Root: http://[::]:${PORT}/`);
   console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`✅ Build exists: ${buildExists}`);
-  console.log(`✅ Railway health checks allowed`);
 });
 
 // Handle server errors
