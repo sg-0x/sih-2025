@@ -49,6 +49,15 @@ app.get('/', (req, res) => {
   });
 });
 
+// Simple test endpoint (no MongoDB dependency)
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Server is responding!',
+    timestamp: new Date().toISOString(),
+    status: 'OK'
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
@@ -1818,10 +1827,22 @@ if (process.env.NODE_ENV === 'production') {
 
 console.log('🚀 Starting Disaster Preparedness App...');
 console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+console.log(`📁 Working Directory: ${process.cwd()}`);
+console.log(`📁 Server File Location: ${__dirname}`);
 
 const PORT = process.env.PORT || 5000;
 console.log(`🌐 Port: ${PORT}`);
 console.log(`🗄️  MongoDB URI: ${process.env.MONGODB_URI ? 'Set' : 'Not set'}`);
+
+// Add error handling for uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  console.error('Stack:', error.stack);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`�� Server running on http://localhost:${PORT}`);
 });
