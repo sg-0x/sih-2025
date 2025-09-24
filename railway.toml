@@ -1,9 +1,8 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm run build"
 
 [deploy]
-startCommand = "cd backend && node server.js"
+startCommand = "npm run start:railway"
 healthcheckPath = "/api/test"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
@@ -16,4 +15,3 @@ source = "."
 [services.variables]
 NODE_ENV = "production"
 PORT = "5000"
-REACT_APP_API_URL = "https://disaster-prep-app-production.up.railway.app/api"

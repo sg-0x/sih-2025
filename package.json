@@ -2,12 +2,12 @@
   "name": "disaster-preparedness-app",
   "version": "0.1.0",
   "private": true,
-  "scripts": {    
-    "start": "npm run build && node backend/server.js",
+  "scripts": {
+    "start": "npm run build && node railway-server.js",
     "start:frontend": "react-scripts start",
-    "start:backend": "node backend/server.js",
-    "start:production": "npm run build && node backend/server.js",
-    "start:railway": "npm run build && node backend/server.js",
+    "start:backend": "cd backend && node server.js",
+    "start:production": "npm run build && node railway-server.js",
+    "start:railway": "npm run build && node railway-server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
