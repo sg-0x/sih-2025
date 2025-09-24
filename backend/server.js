@@ -157,7 +157,10 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
     }
 
-    const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+      : `http://localhost:${PORT}`;
+    const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
     
     res.json({
       success: true,
@@ -832,7 +835,10 @@ app.get('/api/teacher-actions/assigned-modules', async (req, res) => {
           // If URL already exists, keep it; otherwise construct it
           if (!module.files.video.url) {
             if (module.files.video.filename) {
-              module.files.video.url = `http://localhost:5000/uploads/${module.files.video.filename}`;
+              const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+                ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+                : `http://localhost:${PORT}`;
+              module.files.video.url = `${baseUrl}/uploads/${module.files.video.filename}`;
             } else {
               // For existing data without filename, use a default approach
               // Try to match by file type and size
@@ -842,7 +848,10 @@ app.get('/api/teacher-actions/assigned-modules', async (req, res) => {
                   const videoFiles = fs.readdirSync(uploadsDir)
                     .filter(file => file.includes('mp4') || file.includes('avi') || file.includes('mov') || file.includes('wmv'));
                   if (videoFiles.length > 0) {
-                    module.files.video.url = `http://localhost:5000/uploads/${videoFiles[0]}`;
+                    const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+                      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+                      : `http://localhost:${PORT}`;
+                    module.files.video.url = `${baseUrl}/uploads/${videoFiles[0]}`;
                   }
                 }
               } catch (error) {
@@ -855,7 +864,10 @@ app.get('/api/teacher-actions/assigned-modules', async (req, res) => {
           // If URL already exists, keep it; otherwise construct it
           if (!module.files.pdf.url) {
             if (module.files.pdf.filename) {
-              module.files.pdf.url = `http://localhost:5000/uploads/${module.files.pdf.filename}`;
+              const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+                ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+                : `http://localhost:${PORT}`;
+              module.files.pdf.url = `${baseUrl}/uploads/${module.files.pdf.filename}`;
             } else {
               // For existing data without filename, use a default approach
               try {
@@ -864,7 +876,10 @@ app.get('/api/teacher-actions/assigned-modules', async (req, res) => {
                   const pdfFiles = fs.readdirSync(uploadsDir)
                     .filter(file => file.includes('pdf'));
                   if (pdfFiles.length > 0) {
-                    module.files.pdf.url = `http://localhost:5000/uploads/${pdfFiles[0]}`;
+                    const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+                      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+                      : `http://localhost:${PORT}`;
+                    module.files.pdf.url = `${baseUrl}/uploads/${pdfFiles[0]}`;
                   }
                 }
               } catch (error) {

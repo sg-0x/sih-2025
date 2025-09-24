@@ -4,5 +4,10 @@
   },
   "deploy": {
     "startCommand": "cd backend && node server.js"
+  },
+  "environments": {
+    "production": {
+      "REACT_APP_API_URL": "https://sih-2025-production-b822.up.railway.app/api"
+    }
   }
 }
