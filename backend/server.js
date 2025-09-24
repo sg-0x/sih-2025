@@ -1843,6 +1843,6 @@ process.on('uncaughtException', (error) => {
 process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
 });
-server.listen(PORT, '::', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`�� Server running on http://localhost:${PORT}`);
 });

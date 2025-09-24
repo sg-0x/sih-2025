@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "npm run start:production"
+startCommand = "npm run start:backend"
 healthcheckPath = "/api/test"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
