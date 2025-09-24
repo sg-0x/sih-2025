@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm run build && node production-server.js",
+    "start": "npm run build && node railway-server.js",
     "start:frontend": "react-scripts start",
     "start:backend": "cd backend && node server.js",
     "start:production": "npm run build && node railway-server.js",

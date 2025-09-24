@@ -294,7 +294,7 @@ function StudentNotifications() {
                             </span>
                             {assignment.pdfFile && (
                               <a 
-                                href={`http://localhost:5000${assignment.pdfFile}`}
+                                href={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${assignment.pdfFile}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn btn-outline-primary btn-sm"

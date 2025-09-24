@@ -187,11 +187,12 @@ function Drills() {
   const loadTeacherDrills = async () => {
     try {
       // Load drill announcements (these are created by teachers/admins)
-      const drillResponse = await fetch('http://localhost:5000/api/drill-announcements');
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const drillResponse = await fetch(`${apiUrl}/drill-announcements`);
       const drillData = await drillResponse.json();
       
       // Load confirmed drills
-      const confirmedResponse = await fetch('http://localhost:5000/api/teacher-actions/confirmed-drills');
+      const confirmedResponse = await fetch(`${apiUrl}/teacher-actions/confirmed-drills`);
       const confirmedData = await confirmedResponse.json();
       
       const drillAnnouncements = drillData.success ? (drillData.data.announcements || []) : [];

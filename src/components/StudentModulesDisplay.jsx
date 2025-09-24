@@ -177,7 +177,8 @@ function StudentModulesDisplay() {
       const videoId = PointsService.generateModuleVideoId(moduleId, `${fileType}-completion`);
       
       // Use custom points for different file types
-      const response = await fetch('http://localhost:5000/api/points/award', {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiUrl}/points/award`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

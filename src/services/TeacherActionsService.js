@@ -89,14 +89,14 @@ class TeacherActionsService {
               filename: "earthquake-safety-basics.mp4",
               size: 15728640,
               type: "video/mp4",
-              url: "http://localhost:5000/uploads/earthquake-safety-basics.mp4"
+              url: `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}/uploads/earthquake-safety-basics.mp4`
             },
             pdf: {
               originalName: "earthquake-safety-guide.pdf",
               filename: "earthquake-safety-guide.pdf",
               size: 2048576,
               type: "application/pdf",
-              url: "http://localhost:5000/uploads/earthquake-safety-guide.pdf"
+              url: `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}/uploads/earthquake-safety-guide.pdf`
             }
           },
           type: "module_assignment",
@@ -118,7 +118,7 @@ class TeacherActionsService {
               filename: "fire-evacuation-procedures.mp4",
               size: 25165824,
               type: "video/mp4",
-              url: "http://localhost:5000/uploads/fire-evacuation-procedures.mp4"
+              url: `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}/uploads/fire-evacuation-procedures.mp4`
             }
           },
           type: "module_assignment",

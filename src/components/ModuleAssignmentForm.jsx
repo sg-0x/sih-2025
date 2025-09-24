@@ -111,7 +111,8 @@ function ModuleAssignmentForm({ onClose, onSuccess }) {
     formData.append('file', file);
     formData.append('type', fileType);
 
-    const response = await fetch('http://localhost:5000/api/upload', {
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    const response = await fetch(`${apiUrl}/upload`, {
       method: 'POST',
       body: formData
     });
