@@ -5,7 +5,7 @@
   "scripts": {
     "start:frontend": "react-scripts start",
     "start:backend": "cd backend && node server.js",
-    "build": "react-scripts build",
+    "build": "REACT_APP_API_URL=https://sih-2025-production-b822.up.railway.app/api react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
