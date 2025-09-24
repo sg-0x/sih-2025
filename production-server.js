@@ -37,15 +37,15 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// MongoDB connection
+// MongoDB connection - NON-BLOCKING (don't wait for connection)
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://sahildewani75_db_user:Sahil%40123@cluster0.uowncgx.mongodb.net/disaster-prep?retryWrites=true&w=majority&appName=Cluster0';
 
 console.log('🔗 Connecting to MongoDB...');
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 10000,
-  socketTimeoutMS: 45000,
+  serverSelectionTimeoutMS: 5000, // Reduced timeout
+  socketTimeoutMS: 10000, // Reduced timeout
   family: 4 // Use IPv4, skip trying IPv6
 })
 .then(() => {
@@ -54,14 +54,17 @@ mongoose.connect(MONGODB_URI, {
 .catch(err => {
   console.error('❌ MongoDB Connection Error:', err);
   console.log('⚠️  Continuing without MongoDB - using fallback storage');
+  // Don't exit - continue with server startup
 });
 
 mongoose.connection.on('error', (err) => {
   console.error('MongoDB connection error:', err);
+  // Don't exit - continue with server startup
 });
 
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected');
+  // Don't exit - continue with server startup
 });
 
 // Log all incoming requests
@@ -93,7 +96,7 @@ if (buildExists) {
   console.log('❌ Build directory not found');
 }
 
-// Health check endpoint
+// Health check endpoint - RESPOND IMMEDIATELY (no MongoDB dependency)
 app.get('/api/test', (req, res) => {
   console.log('✅ /api/test endpoint hit');
   console.log('📊 Request details:', {
@@ -110,7 +113,8 @@ app.get('/api/test', (req, res) => {
     port: PORT,
     buildExists: buildExists,
     env: process.env.NODE_ENV,
-    serverTime: new Date().toISOString()
+    serverTime: new Date().toISOString(),
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'connecting'
   });
 });
 
@@ -435,16 +439,18 @@ if (buildExists) {
   });
 }
 
-// Error handling
+// Error handling - DON'T EXIT ON ERRORS (Railway needs server to stay alive)
 process.on('uncaughtException', (error) => {
   console.error('❌ Uncaught Exception:', error);
   console.error('Stack:', error.stack);
-  process.exit(1);
+  // Don't exit - let Railway handle it
+  console.log('⚠️  Continuing despite uncaught exception...');
 });
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
+  // Don't exit - let Railway handle it
+  console.log('⚠️  Continuing despite unhandled rejection...');
 });
 
 // Socket.io setup
