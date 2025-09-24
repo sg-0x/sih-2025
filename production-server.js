@@ -63,7 +63,7 @@ app.get('/api/test', (req, res) => {
     ip: req.ip,
     ips: req.ips
   });
-  res.json({ 
+  res.status(200).json({ 
     message: 'Production server is responding!',
     timestamp: new Date().toISOString(),
     status: 'OK',
@@ -169,6 +169,26 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`✅ Build exists: ${buildExists}`);
   console.log(`✅ Server is ready to accept connections!`);
+  console.log(`✅ Railway health check should work now!`);
+  
+  // Test the health check endpoint immediately
+  setTimeout(() => {
+    console.log('🧪 Testing health check endpoint...');
+    const http = require('http');
+    const options = {
+      hostname: '0.0.0.0',
+      port: PORT,
+      path: '/api/test',
+      method: 'GET'
+    };
+    const req = http.request(options, (res) => {
+      console.log(`✅ Health check test: ${res.statusCode}`);
+    });
+    req.on('error', (err) => {
+      console.log(`❌ Health check test failed: ${err.message}`);
+    });
+    req.end();
+  }, 1000);
 });
 
 // Handle server errors
