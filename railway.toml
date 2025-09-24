@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "node railway-server.js"
+startCommand = "npm run start:production"
 healthcheckPath = "/api/test"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
