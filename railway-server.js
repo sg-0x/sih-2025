@@ -28,7 +28,7 @@ app.use(express.json());
 
 // Serve static files from the React app build directory
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../build')));
+  app.use(express.static(path.join(__dirname, 'build')));
 }
 
 // Root endpoint
@@ -1821,7 +1821,7 @@ app.get('/api/leaderboard', async (req, res) => {
 // Catch-all handler: send back React's index.html file for client-side routing
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../build/index.html'));
+    res.sendFile(path.join(__dirname, 'build/index.html'));
   });
 }
 
@@ -1843,6 +1843,6 @@ process.on('uncaughtException', (error) => {
 process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
 });
-server.listen(PORT, '::', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`�� Server running on http://localhost:${PORT}`);
 });
