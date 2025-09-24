@@ -8,7 +8,9 @@ class RealtimeService {
 
   connect() {
     if (!this.socket) {
-      this.socket = io('http://localhost:5000');
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const socketUrl = apiUrl.replace('/api', ''); // Remove /api for socket connection
+      this.socket = io(socketUrl);
       
       this.socket.on('connect', () => {
         console.log('✅ Connected to real-time server');

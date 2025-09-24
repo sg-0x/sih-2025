@@ -21,9 +21,10 @@ function Emergency() {
   const fetchRealTimeData = async () => {
     try {
       setLoading(true);
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
       const [alertsResponse, drillsResponse] = await Promise.all([
-        fetch('http://localhost:5000/api/emergency-alerts'),
-        fetch('http://localhost:5000/api/drill-announcements')
+        fetch(`${apiUrl}/emergency-alerts`),
+        fetch(`${apiUrl}/drill-announcements`)
       ]);
 
       const alertsData = await alertsResponse.json();
