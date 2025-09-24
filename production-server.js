@@ -321,40 +321,40 @@ app.post('/api/assignments/create', async (req, res) => {
 });
 
 
-// Root endpoint
+// Root endpoint - serve React app or fallback
 app.get('/', (req, res) => {
   console.log('✅ Root endpoint hit');
-  if (buildExists) {
-    const indexPath = path.join(buildPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-      try {
+  try {
+    if (buildExists) {
+      const indexPath = path.join(buildPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
         console.log('📄 Served React app from build directory');
-      } catch (error) {
-        console.error('❌ Error serving React app:', error);
-        res.json({ 
-          message: 'Production server is running! (Build exists but error serving)',
-          status: 'OK',
-          timestamp: new Date().toISOString(),
-          port: PORT,
-          error: error.message
-        });
+        return;
       }
-    } else {
-      console.log('❌ index.html not found');
-      res.json({ 
-        message: 'Production server is running! (index.html not found)',
-        status: 'OK',
-        timestamp: new Date().toISOString(),
-        port: PORT
-      });
     }
-  } else {
+    
+    // Fallback response if React app not available
     res.json({ 
-      message: 'Production server is running! (No build directory)',
+      message: 'Disaster Preparedness App Server is running!',
       status: 'OK',
       timestamp: new Date().toISOString(),
-      port: PORT
+      port: PORT,
+      mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+      endpoints: [
+        'GET /api/test - Health check',
+        'GET /api/health - Server health',
+        'GET /api/points/user/:userId - User points',
+        'GET /api/leaderboard - Leaderboard',
+        'GET /api/alerts - Emergency alerts'
+      ]
+    });
+  } catch (error) {
+    console.error('❌ Root endpoint error:', error);
+    res.status(500).json({ 
+      message: 'Server error',
+      error: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 });
@@ -389,12 +389,28 @@ if (buildExists) {
 process.on('uncaughtException', (error) => {
   console.error('❌ Uncaught Exception:', error);
   console.error('Stack:', error.stack);
-  process.exit(1);
+  // Don't exit immediately, let the server try to recover
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
+  // Don't exit immediately, let the server try to recover
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
+});
+
+// Add global error handler for Express
+app.use((error, req, res, next) => {
+  console.error('❌ Express Error:', error);
+  res.status(500).json({
+    message: 'Internal server error',
+    error: process.env.NODE_ENV === 'production' ? 'Something went wrong' : error.message,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Create HTTP server
@@ -461,6 +477,25 @@ const server = httpServer.listen(PORT, '0.0.0.0', () => {
     });
     req.end();
   }, 1000);
+  
+  // Test root endpoint
+  setTimeout(() => {
+    console.log('🧪 Testing root endpoint...');
+    const http = require('http');
+    const options = {
+      hostname: '0.0.0.0',
+      port: PORT,
+      path: '/',
+      method: 'GET'
+    };
+    const req = http.request(options, (res) => {
+      console.log(`✅ Root endpoint test: ${res.statusCode}`);
+    });
+    req.on('error', (err) => {
+      console.log(`❌ Root endpoint test failed: ${err.message}`);
+    });
+    req.end();
+  }, 2000);
 });
 
 // Handle server errors
