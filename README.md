@@ -1,4 +1,7 @@
 # Disaster Preparedness App (D-Prep)
+![Platform](https://img.shields.io/badge/platform-web-blue) 
+![License](https://img.shields.io/badge/license-MIT-green.svg) 
+![Made with](https://img.shields.io/badge/made%20with-React.js%20%26%20Node.js-yellowgreen) 
 
 A comprehensive disaster preparedness training platform designed to educate students and teachers about emergency response procedures. The app combines interactive simulations, video-based learning, structured modules, and gamified features to make disaster management education engaging and effective.
 
