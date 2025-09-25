@@ -34,7 +34,7 @@ A comprehensive disaster preparedness training platform designed to educate stud
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/disaster-preparedness-app.git
+   git clone https://github.com/sg-0x/sih-2025.git
    cd disaster-preparedness-app
    
 2. **Install dependencies**
