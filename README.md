@@ -1,7 +1,6 @@
 # Disaster Preparedness App (D-Prep)
 
-A comprehensive disaster preparedness training platform designed to educate students and teachers about emergency response procedures.  
-The app combines interactive simulations, video-based learning, structured modules, and gamified features to make disaster management education engaging and effective.
+A comprehensive disaster preparedness training platform designed to educate students and teachers about emergency response procedures. The app combines interactive simulations, video-based learning, structured modules, and gamified features to make disaster management education engaging and effective.
 
 ---
 
@@ -58,4 +57,17 @@ The app combines interactive simulations, video-based learning, structured modul
 5. **Open your browser and visit:**
    http://localhost:3000
 
+---
+
+## License
+
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.  
+
+---
+
+## Acknowledgments
+
+This project was created as part of **Smart India Hackathon (SIH) 2025**.  
+
+---
    
