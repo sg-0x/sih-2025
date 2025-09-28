@@ -11,6 +11,11 @@ A comprehensive disaster preparedness training platform designed to educate stud
 
 [Visit the App](https://sih-2025-production-b822.up.railway.app/)
 
+To access the student panel, Sign Up normally.
+
+To access the teacher panel, use test credentials: teacher3@d-prep.edu | teacher123
+
+To access the admin panel, use test credentials: admin@d-prep.edu | admin123
 ---
 
 ## Technology Stack
